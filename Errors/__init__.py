@@ -26,3 +26,8 @@ class EmptyPromptError(Error):
 class CreditExhaustedError(Error):
     """Raised when user attempts to use more credit than allowed"""
     pass
+
+
+class NotAdminError(Error):
+    """Raised when user attempts to use a privileged command"""
+    pass

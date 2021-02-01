@@ -32,6 +32,8 @@ def check_setup(method):
                 return await self.credit_warning(method_args[0])
             except OpenAIError:
                 return await self.openai_down_warning(method_args[0])
+            except NotAdminError:
+                return await self.not_admin_warning(method_args[0])
         return await self.prompt_setup(method_args[0])
 
     return _impl
@@ -126,6 +128,11 @@ class GPTBot(commands.Cog):
         user_id, user_name = user_parse(ctx)
         await ctx.send("{}, your daily allowance is over. :cry:".format(user_name))
 
+    @staticmethod
+    async def not_admin_warning(ctx):
+        user_id, user_name = user_parse(ctx)
+        await ctx.send("{}, this command is only usable by admins.".format(user_name))
+
     @commands.command()
     async def help(self, ctx):
         await ctx.send(help_message)
@@ -174,12 +181,13 @@ class GPTBot(commands.Cog):
                        "our BTC address: 14ozvJYfChmiXwqhfzH4yCqcYR7gzwfVYT")
 
     @commands.command()
-    @commands.is_owner()
     @commands.guild_only()
     async def config(self, ctx):
         user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
-        _, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        owner_id, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        if user_id != owner_id:
+            raise NotAdminError
         length_str = "# Length: {}\n".format(length)
         allowance_str = "# Allowance: {}\n".format(allowance)
         vips_str = """# Vips\n"""
@@ -189,38 +197,50 @@ class GPTBot(commands.Cog):
         return await ctx.send(length_str + allowance_str + vips_str)
 
     @commands.command()
-    @commands.is_owner()
     @commands.guild_only()
     async def allowance(self, ctx, allowance: int):
+        user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
+        owner_id, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        if user_id != owner_id:
+            raise NotAdminError
         self.__db.update_server_allowance(guild_id, allowance)
         return await ctx.send("Successfully updated member allowance to {}".format(allowance))
 
     @commands.command()
-    @commands.is_owner()
     @commands.guild_only()
     async def length(self, ctx, length: int):
+        user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
+        owner_id, vips, _, old_length, allowance = self.__db.get_server_settings(guild_id)
+        if user_id != owner_id:
+            raise NotAdminError
         self.__db.update_server_length(guild_id, length)
         return await ctx.send("Successfully updated response length to {}".format(length))
 
     @commands.command()
-    @commands.is_owner()
     @commands.guild_only()
     async def vip(self, ctx, *, member: discord.Member):
+        user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
-        user_id, user_name = member.id, member.display_name
-        self.__db.add_vip(guild_id, user_id)
-        return await ctx.send("Successfully added {} to vips.".format(user_name))
+        owner_id, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        if user_id != owner_id:
+            raise NotAdminError
+        member_id, member_name = member.id, member.display_name
+        self.__db.add_vip(guild_id, member_id)
+        return await ctx.send("Successfully added {} to vips.".format(member_name))
 
     @commands.command()
-    @commands.is_owner()
     @commands.guild_only()
     async def remove_vip(self, ctx, *, member: discord.Member):
+        user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
-        user_id, user_name = member.id, member.display_name
-        self.__db.remove_vip(guild_id, user_id)
-        return await ctx.send("Successfully removed {} from vips.".format(user_name))
+        owner_id, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        if user_id != owner_id:
+            raise NotAdminError
+        member_id, member_name = member.id, member.display_name
+        self.__db.remove_vip(guild_id, member_id)
+        return await ctx.send("Successfully removed {} from vips.".format(member_name))
 
     @commands.command()
     @commands.guild_only()
