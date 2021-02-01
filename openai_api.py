@@ -99,8 +99,8 @@ class ApiHandler:
                 'length': length,
                 'temperature': temperature,
                 'top_p': 1,
-                'frequency_penalty': 0,
-                'presence_penalty': 0,
+                'frequency_penalty': frequency_penalty,
+                'presence_penalty': presence_penalty,
                 "stream": False,
                 'best_of': 1,
                 "stop": ["###", "\n"]
@@ -263,8 +263,8 @@ class ApiHandler:
                 "stream": False,
                 "logprobs": None,
                 "echo": False,
-                "frequency_penalty": 0,
-                "presence_penalty": 0,
+                "frequency_penalty": frequency_penalty,
+                "presence_penalty": presence_penalty,
                 "stop": "\n"
             }
             async with aiohttp.ClientSession() as session:
@@ -298,8 +298,8 @@ class ApiHandler:
                 "stream": False,
                 "logprobs": None,
                 "echo": False,
-                "frequency_penalty": 0,
-                "presence_penalty": 0,
+                "frequency_penalty": frequency_penalty,
+                "presence_penalty": presnece_penalty,
                 "stop": "\n"
             }
             async with aiohttp.ClientSession() as session:
