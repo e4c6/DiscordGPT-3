@@ -201,7 +201,7 @@ class GPTBot(commands.Cog):
     async def allowance(self, ctx, allowance: int):
         user_id, user_name = user_parse(ctx)
         guild_id = ctx.guild.id
-        owner_id, vips, _, length, allowance = self.__db.get_server_settings(guild_id)
+        owner_id, vips, _, length, old_allowance = self.__db.get_server_settings(guild_id)
         if user_id != owner_id:
             raise NotAdminError
         self.__db.update_server_allowance(guild_id, allowance)
