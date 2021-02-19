@@ -22,6 +22,6 @@ It also features:
 
 If you enjoy this bot consider donating via BTC address: 14ozvJYfChmiXwqhfzH4yCqcYR7gzwfVYT
 
-[Click here](https://discord.com/api/oauth2/authorize?client_id=783391906309865483&permissions=2048&scope=bot) to add it to your server.
+[Click here](https://top.gg/bot/783391906309865483) to add it to your server.
 
 Note: You need a GPT-3 beta API key to be able to use this bot. See [here](https://beta.openai.com/) for details.
