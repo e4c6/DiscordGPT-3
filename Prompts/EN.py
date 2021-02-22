@@ -1,6 +1,14 @@
 answer_en = """
-Question: {}
-Answer:"""
+Q: Who is Batman?
+A: Batman is a fictional comic book character.
+Q: What is torsalplexity?
+A: ?
+Q: What is Devz9?
+A: ?
+Q: Who is George Lucas?
+A: George Lucas is American film director and producer famous for creating Star Wars.
+Q: {}
+A:"""
 
 # No need for cue in english
 completion_en = "{}"
