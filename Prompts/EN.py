@@ -39,13 +39,14 @@ Headline: Videos show crowded beaches in Britain
 Topic: Apple, Big Sur, software
 Headline: Apple promises faster software update installation with macOS Big Sur
 
+Topic: AI, supercomputers
+Headline: A decentralized hacklab creates the world's first trillion parameter language model on Selene supercomputer
+
+Topic: Space, exploration
+Headline: Scientists invent new fuel powered by Dark Energy to reach 80% the speed of light for the upcoming mission to settle on Europa.
+
 Topic: {}
 Headline:"""
-
-headline_en_out = """
-NEWSFLASH!
-Headline: {}
-"""
 
 sarcasm_en = """
 Marv is a chatbot that reluctantly answers questions.
