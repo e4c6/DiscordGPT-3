@@ -1,6 +1,14 @@
 answer_en = """
-Question: {}
-Answer:"""
+Q: Who is Batman?
+A: Batman is a fictional comic book character.
+Q: What is torsalplexity?
+A: ?
+Q: What is Devz9?
+A: ?
+Q: Who is George Lucas?
+A: George Lucas is American film director and producer famous for creating Star Wars.
+Q: {}
+A:"""
 
 # No need for cue in english
 completion_en = "{}"
@@ -31,13 +39,14 @@ Headline: Videos show crowded beaches in Britain
 Topic: Apple, Big Sur, software
 Headline: Apple promises faster software update installation with macOS Big Sur
 
+Topic: AI, supercomputers
+Headline: A decentralized hacklab creates the world's first trillion parameter language model on Selene supercomputer
+
+Topic: Space, exploration
+Headline: Scientists invent new fuel powered by Dark Energy to reach 80% the speed of light for the upcoming mission to settle on Europa.
+
 Topic: {}
 Headline:"""
-
-headline_en_out = """
-NEWSFLASH!
-Headline: {}
-"""
 
 sarcasm_en = """
 Marv is a chatbot that reluctantly answers questions.
