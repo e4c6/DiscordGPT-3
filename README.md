@@ -25,3 +25,22 @@ If you enjoy this bot consider donating via BTC address: 14ozvJYfChmiXwqhfzH4yCq
 [Click here](https://top.gg/bot/783391906309865483) to add it to your server.
 
 Note: You need a GPT-3 beta API key to be able to use this bot. See [here](https://beta.openai.com/) for details.
+
+# Standalone Installation
+* Tested with Python 3.8
+* A Mongo DB instance is required
+
+Set the following environment variables and run ``python3 bot.py``:
+* `DISCORD_TOKEN=<YOUR BOT API TOKEN>`
+* `MONGO_DBUSER=<MONGO DATABASE USER>`
+* `MONGO_DBPASS=<MONGO DATABASE USER PASSWORD>`
+* `MONGO_HOST=<MONGO DATABASE HOST IP>`
+* `MONGO_PORT=<MONGO DATABASE HOST PORT>`
+* `MONGO_DBNAME=<MONGO DATABASE NAME>`
+
+# Docker Installation
+* Edit `DISCORD_TOKEN` variable inside [docker-compose.override.yml](docker-compose.override.yml)
+  * Optional: Change mongo root user/pw/port values
+    
+
+run ``docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d`` inside the directory.
