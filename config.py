@@ -1,7 +1,4 @@
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 # SECRETS
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
