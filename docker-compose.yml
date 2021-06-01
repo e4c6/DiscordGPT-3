@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  bot:
+    build: .
+    networks:
+      - gpt3
+
+  mongodb:
+    image: mongo
+    volumes:
+      - dbdata:/data/db
+    restart: always
+    networks:
+      - gpt3
+
+volumes:
+  dbdata:
+
+networks:
+  gpt3:
+    name: "gpt3-proxy"
