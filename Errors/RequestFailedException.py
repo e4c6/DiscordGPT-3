@@ -21,6 +21,5 @@ class RequestFailedException(Error):
             raise TokenInvalidError
         elif self.status_code == 500:
             raise OpenAIError
-        else:
-            raise NotImplementedError(
-                Template("$input status code has no exception handler.").substitute(input=self.status_code))
+        raise NotImplementedError(
+            Template("$input status code has no exception handler.").substitute(input=self.status_code))
