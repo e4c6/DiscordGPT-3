@@ -2,15 +2,18 @@ from datetime import datetime
 
 import pymongo
 
-import logger
+from Implementation.LoggingHandler import LoggingHandler
 
 
-class DBHandler:
-    def __init__(self, mongu_uri, mongo_dbname):
-        self.__client = pymongo.MongoClient(mongu_uri)
-        self.__db = self.__client[mongo_dbname]
-        self.__servers = self.__db["gpt3_servers"]
+class DbHandler:
+    def __init__(self, mongo_uri: str, mongo_db_name: str, logger: LoggingHandler):
         self.__logger = logger.get_logger("db_handler")
+        self.__client = pymongo.MongoClient(mongo_uri)
+        self.__db = self.__client[mongo_db_name]
+        self.__servers = self.__db["gpt3_servers"]
+
+    def get_server_ids(self):
+        return list(self.__servers.find({}, {"server_id": 1}))
 
     def check_server_token(self, server_id):
         result = self.__servers.find_one({"server_id": server_id})
