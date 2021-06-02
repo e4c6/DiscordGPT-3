@@ -1,13 +1,18 @@
-import logger
+import asyncio
+
 import discord
-from openai_api import ApiHandler
-from functools import wraps
-from db import DBHandler
-from Prompts import language_map
 from discord.ext import commands
+
+import logger
+from Errors.CreditExhaustedError import CreditExhaustedError
+from Errors.EmptyPromptError import EmptyPromptError
+from Errors.NotAdminError import NotAdminError
+from Helpers.Wrappers import check_setup
+from Implementation.ApiClient import ApiClient
+from Prompts import language_map
 from config import DISCORD_TOKEN, MONGO_URI, MONGO_DBNAME, PREFIX
+from db import DBHandler
 from helpers import user_parse, help_message
-from Errors import *
 
 bot = commands.Bot(command_prefix=PREFIX, help_command=None)
 
@@ -15,36 +20,12 @@ thumbs_up = "👍"
 complete = "✅"
 
 
-def check_setup(method):
-    @wraps(method)
-    async def _impl(self, *method_args, **method_kwargs):
-        if await self.check_server_token(method_args[0]):
-            try:
-                method_output = method(self, *method_args, **method_kwargs)
-                return await method_output
-            except TokenExhaustedError:
-                return await self.token_exhausted(method_args[0])
-            except TokenInvalidError:
-                return await self.token_invalid(method_args[0])
-            except EmptyPromptError:
-                return await self.empty_warning(method_args[0])
-            except CreditExhaustedError:
-                return await self.credit_warning(method_args[0])
-            except OpenAIError:
-                return await self.openai_down_warning(method_args[0])
-            except NotAdminError:
-                return await self.not_admin_warning(method_args[0])
-        return await self.prompt_setup(method_args[0])
-
-    return _impl
-
-
 class GPTBot(commands.Cog):
     def __init__(self, bot, mongo_uri, mongo_dbname):
         self.bot = bot
-        self.__logger = logger.get_logger("openai_logger")
-        self.__db = DBHandler(mongo_uri, mongo_dbname, self.__logger)
-        self.__api = ApiHandler(self.__logger)
+        self.__logger = logger.get_logger("gpt3_bot")
+        self.__db = DBHandler(mongo_uri, mongo_dbname)
+        self.__api = ApiClient()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -146,10 +127,35 @@ class GPTBot(commands.Cog):
             await ctx.send("You don't seem to own any servers that i'm on. If you think this is a mistake, kick the "
                            "bot and add it again.")
             return
+
+        def check_token(m):
+            return m.channel == ctx.channel
+
+        owned_server = owned_servers[0]
+
         if len(owned_servers) > 1:
-            await ctx.send("For the time being you cannot add me to more than one server. But the developers are "
-                           "working on it.")
-            return
+            message = ""
+            for serv in owned_servers:
+                message += "[" + str((owned_servers.index(serv) + 1)) + "]"
+                message += "server name:" + serv["server_name"]
+                message += ", server id:" + serv["server_id"]
+                message += "\n"
+
+            await ctx.send("I noticed that you're an admin on multiple servers. Please choose which server "
+                           "you'd like to setup."
+                           "{}".format(message)
+                           )
+            try:
+                msg = await bot.wait_for("message", check=check_token, timeout=60)
+                choice = int(msg.content)
+                owned_server = owned_servers[choice]
+            except asyncio.TimeoutError:
+                await ctx.send("Timeout has been reached. You can try again with !setup.")
+                return
+            except (TypeError, ValueError):
+                await ctx.send("Invalid value. Please select a number. (e.g. '1') You can try again with !setup.")
+                return
+
         await ctx.send("Important note: For this bot to function and process requests, it has to save your api key in "
                        "a database. This means that if the bad guys somehow access it, they can use your token and "
                        "even cause incurring charges. We cannot be held responsible for that and suggest you to host "
@@ -157,28 +163,33 @@ class GPTBot(commands.Cog):
                        "github.com/e4c6/DiscordGPT-3). If that's not a concern for "
                        "you, feel free to proceed. If you ever doubt something is going fishy, you should quickly "
                        "regenerate your api token through the developer portal on beta.openai.com.")
-        owned_server = owned_servers[0]
+
         server_id, server_name = owned_server["server_id"], owned_server["server_name"]
         await ctx.send("Hi {}, i see that you're the owner of {}. Now please send me your OpenAI api key within 60 "
                        "seconds. (and "
                        "nothing else).\nIt should be visible to you on https://beta.openai.com/account/api-keys.".format(
             user_name, server_name))
 
-        def check_token(m):
-            return m.channel == ctx.channel
+        try:
+            msg = await bot.wait_for("message", check=check_token, timeout=60)
+        except asyncio.TimeoutError:
+            await ctx.send("Timeout has been reached. You can try again with !setup.")
+            return
 
-        msg = await bot.wait_for("message", check=check_token, timeout=60)
         if not msg.content[0:3] == "sk-":
             await ctx.send("Your api token should start with the characters sk-. You can restart this process when "
                            "you find it.")
             return
+
         if len(msg.content) > 50:
             await ctx.send("Your key seems abnormally long... You can restart this process when "
                            "you find the right key.")
             return
+
+
         self.__db.set_server_token(server_id, msg.content)
-        await ctx.send("Successfully set the token, enjoy! If you like this bot, please consider donating to us via "
-                       "our BTC address: 14ozvJYfChmiXwqhfzH4yCqcYR7gzwfVYT")
+        await ctx.send("Successfully set the token, enjoy! If you like this bot, please consider donating via "
+                       " BTC address: 14ozvJYfChmiXwqhfzH4yCqcYR7gzwfVYT")
 
     @commands.command()
     @commands.guild_only()

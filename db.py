@@ -1,13 +1,16 @@
-import pymongo
 from datetime import datetime
+
+import pymongo
+
+import logger
 
 
 class DBHandler:
-    def __init__(self, mongu_uri, mongo_dbname, logger):
+    def __init__(self, mongu_uri, mongo_dbname):
         self.__client = pymongo.MongoClient(mongu_uri)
         self.__db = self.__client[mongo_dbname]
         self.__servers = self.__db["gpt3_servers"]
-        self.__logger = logger
+        self.__logger = logger.get_logger("db_handler")
 
     def check_server_token(self, server_id):
         result = self.__servers.find_one({"server_id": server_id})
@@ -36,8 +39,10 @@ class DBHandler:
 
     def get_server_settings(self, server_id):
         settings = self.__servers.find_one({"server_id": server_id},
-                                           {"owner_id": 1, "vips": 1, "api_token": 1, "response_length": 1, "daily_allowance": 1})
-        return settings["owner_id"], settings["vips"], settings["api_token"], settings["response_length"], settings["daily_allowance"]
+                                           {"owner_id": 1, "vips": 1, "api_token": 1, "response_length": 1,
+                                            "daily_allowance": 1})
+        return settings["owner_id"], settings["vips"], settings["api_token"], settings["response_length"], settings[
+            "daily_allowance"]
 
     def set_server_token(self, server_id, token):
         return self.__servers.update_one({"server_id": server_id}, {"$set": {"api_token": token}})

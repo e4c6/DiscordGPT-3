@@ -1,12 +1,12 @@
 answer_tr = """
-Soru: {}
+Soru: $input
 Cevap:"""
 
 completion_tr = """
 İpucu: Nasa uzay üssünde yeni bir deneme
 Cümle: Nasa uzay üssünde yeni bir deneme yapıyormuş. Gönüllü başvuranlar arasından Temel, astronot adayı olarak seçilmiş. Ön elemede oldukça sıkı testleri geçen Temel; 3 aylik ikinci bir eğitim ile iyi bir astronot olabilmiş. Beklenen an gelmiş ve Temel bir maymunla birlikte uzay mekiğine binerek havalanmış. Atmosfer aşıldıktan sonra Temel'in ilk işi; kendisine sıkı sıkıya söylenildiği gibi zarfları açıp maymunun ve kendisinin görev kartlarını okumak olmuş.
 ###
-İpucu: {}
+İpucu: $input
 Cümle: """
 
 headline_tr = """
@@ -16,12 +16,12 @@ Manşet: Son Dakika: Alman basını duyurdu! 'Türkiye'yi zapt etmek zorlaşıyo
 Konu: Koronavirüs, Sağlık, Bakan
 Manşet: Son dakika... Yeni tavsiye kararları gelecek mi? Bakan Koca'dan flaş açıklamalar
 
-Konu: {}
+Konu: $input
 Manşet:"""
 
 headline_tr_out = """
 FLAŞ! FLAŞ! FLAŞ!
-Manşet: {}
+Manşet: $input
 """
 
 sarcasm_tr = """
@@ -34,13 +34,13 @@ Kullanıcı: Bir kilogramda kaç pound var?
 Kullanıcı: HTML ne demek?
 Ömer: Google çok mu meşguldü? Hypertext Markup Language. Daha iyi sorular sormayı dene.
 ###
-Kullanıcı: {}
+Kullanıcı: $input
 Ömer:"""
 
 sentiment_tr = ["Olumlu.", "Olumsuz.", "Nötr."]
 
 song_tr = """
-"{}" - {} Şarkı Sözleri
+"$input" - $input2 Şarkı Sözleri
 -----------------------------------
 [NAKARAT 1]\n"""
 
@@ -51,5 +51,5 @@ foulmouth_tr = """
 Kullanıcı: Nabersin?
 Ömer: Ananı avradını sikerim orospu çocuğu.
 ###
-Kullanıcı: {}
+Kullanıcı: $input
 Ömer:"""
