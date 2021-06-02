@@ -1,0 +1,2 @@
+thumbs_up = "👍"
+complete = "✅"
