@@ -1,4 +1,5 @@
 import os
+from logging import DEBUG
 
 # SECRETS
 DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
@@ -11,3 +12,6 @@ MONGO_URI = "mongodb://{}:{}@{}:{}".format(MONGO_DBUSER, MONGO_DBPASS, MONGO_HOS
 
 # BOT CONFIGS
 PREFIX = "!"
+
+# LOG SETTINGS
+LOG_LEVEL = DEBUG
