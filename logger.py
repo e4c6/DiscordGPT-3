@@ -1,7 +1,7 @@
 import logging
-from logging.handlers import WatchedFileHandler
 import os
 import sys
+from logging.handlers import WatchedFileHandler
 from multiprocessing import current_process
 
 modules_directory = os.path.dirname(__file__)
@@ -25,11 +25,10 @@ def get_file_handler():
     return file_handler
 
 
-def get_logger(logger_name):  # , identifiers
+def get_logger(logger_name):
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
     logger.addHandler(get_console_handler())
     logger.addHandler(get_file_handler())
-    # logger = logging.LoggerAdapter(logger, identifiers)
     logger.propagate = False
     return logger
