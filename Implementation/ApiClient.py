@@ -1,54 +1,16 @@
 #  e4c6 ~ 2021
 
-from abc import ABCMeta, abstractmethod
 from string import Template
 from typing import Tuple
 
 import aiohttp
 
+from Abstraction.IApiClient import ApiClientInterface
 from Errors.RequestFailedException import RequestFailedException
 from Helpers.Formatters import prep_sentiment
 from Helpers.Wrappers import try_catch_log
 from Implementation import LoggingHandler
 from Prompts import language_map
-
-
-class ApiClientInterface(metaclass=ABCMeta):
-
-    @abstractmethod
-    async def complete(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def answer(self, question: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def song(self, song_name: Tuple[str], user_name, length: int, api_key: str, language: str,
-                   temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def headline(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def sentiment(self, prompt: Tuple[str], api_key: str, language: str) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def emojify(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def sarcastic_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str,
-                               temperature: float) -> str:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def foulmouth_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str,
-                               temperature: float) -> str:
-        raise NotImplementedError
 
 
 class ApiClient(ApiClientInterface):
