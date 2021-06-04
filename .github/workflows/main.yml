@@ -14,8 +14,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the stack
         run: docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
-      - name: Set up environment variables
-        run: export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+
 
   test:
     runs-on: ubuntu-latest
@@ -40,6 +39,8 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --output-file=flake8.out
+      - name: Set up environment variables
+        run: export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
       - name: Test with pytest
         run: |
           pytest Tests/ApiClientTest.py --doctest-modules --junitxml=junit/test-results.xml
