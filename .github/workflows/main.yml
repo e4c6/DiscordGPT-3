@@ -43,12 +43,14 @@ jobs:
       - name: Test with pytest
         run: |
           pytest Tests/ApiClientTest.py --doctest-modules --junitxml=junit/test-results.xml
+      - name: Upload test results
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: pytest-reports
           path: junit/test-results.xml
           if-no-files-found: error
           retention-days: 7
-      - name: Upload a Build Artifact
+      - name: Upload lint results
         uses: actions/upload-artifact@v2.2.3
         with:
           name: flake8-report
