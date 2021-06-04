@@ -1,14 +1,18 @@
+#  e4c6 ~ 2021
+
 import os
 
 import pytest
 
 from Implementation.ApiClient import ApiClient
+from Implementation.LoggingHandler import LoggingHandler, LogLevel
 
 key = os.environ.get("OPENAI_API_KEY")
 if key is None:
     raise ValueError("OPENAI_API_KEY environment variable is required")
 
-client = ApiClient()
+logger = LoggingHandler(LogLevel.DEBUG)
+client = ApiClient(logger)
 
 
 @pytest.mark.asyncio

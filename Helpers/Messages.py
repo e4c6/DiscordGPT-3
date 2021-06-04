@@ -1,7 +1,3 @@
-def user_parse(ctx):
-    return ctx.author.id, ctx.author.display_name
-
-
 help_message = """-
 [GENERAL]
 !help - shows this message

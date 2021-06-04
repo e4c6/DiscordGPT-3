@@ -1,53 +1,58 @@
+#  e4c6 ~ 2021
+
 from abc import ABCMeta, abstractmethod
 from string import Template
 from typing import Tuple
 
 import aiohttp
 
-import logger
 from Errors.RequestFailedException import RequestFailedException
 from Helpers.Formatters import prep_sentiment
 from Helpers.Wrappers import try_catch_log
+from Implementation import LoggingHandler
 from Prompts import language_map
 
 
 class ApiClientInterface(metaclass=ABCMeta):
 
     @abstractmethod
-    def complete(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def complete(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def answer(self, question: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def answer(self, question: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def song(self, song_name: Tuple[str], user_name, length: int, api_key: str, language: str, temperature: float):
+    async def song(self, song_name: Tuple[str], user_name, length: int, api_key: str, language: str,
+                   temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def headline(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def headline(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def sentiment(self, prompt: Tuple[str], api_key: str, language: str):
+    async def sentiment(self, prompt: Tuple[str], api_key: str, language: str) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def emojify(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def emojify(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def sarcastic_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def sarcastic_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str,
+                               temperature: float) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def foulmouth_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str, temperature: float):
+    async def foulmouth_answer(self, prompt: Tuple[str], length: int, api_key: str, language: str,
+                               temperature: float) -> str:
         raise NotImplementedError
 
 
 class ApiClient(ApiClientInterface):
-    def __init__(self):
+    def __init__(self, logger: LoggingHandler):
         self.__logger = logger.get_logger("openai_client")
 
     @staticmethod
@@ -56,7 +61,7 @@ class ApiClient(ApiClientInterface):
             raise RequestFailedException(status_code)
 
     @try_catch_log
-    async def complete(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def complete(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5) -> str:
         cue = " ".join(str(x) for x in prompt)
         prompt = Template(language_map[language]["complete"]).substitute(input=cue)
         headers = {
@@ -83,7 +88,7 @@ class ApiClient(ApiClientInterface):
                 return cue + out
 
     @try_catch_log
-    async def answer(self, question: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def answer(self, question: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5) -> str:
         question = " ".join(str(x) for x in question)
         prompt = Template(language_map[language]["answer"]).substitute(input=question)
         headers = {
@@ -142,7 +147,7 @@ class ApiClient(ApiClientInterface):
                 return out
 
     @try_catch_log
-    async def headline(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def headline(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5) -> str:
         topics = ", ".join(str(x) for x in prompt)
         scaffold = Template(language_map[language]["headline"]).substitute(input=topics)
 
@@ -171,7 +176,7 @@ class ApiClient(ApiClientInterface):
                 return result
 
     @try_catch_log
-    async def sentiment(self, prompt: Tuple[str], api_key: str, language="EN"):
+    async def sentiment(self, prompt: Tuple[str], api_key: str, language="EN") -> str:
         prompt = " ".join(str(x) for x in prompt)
         data = {"documents": language_map[language]["sentiment"],
                 "query": Template("$input.").substitute(input=prompt)}
@@ -189,7 +194,7 @@ class ApiClient(ApiClientInterface):
                 return sentiment
 
     @try_catch_log
-    async def emojify(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def emojify(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5) -> str:
         topics = " ".join(str(x) for x in prompt)
         scaffold = Template(language_map[language]["emojify"]).substitute(input=topics)
 
@@ -220,7 +225,8 @@ class ApiClient(ApiClientInterface):
                 return result
 
     @try_catch_log
-    async def sarcastic_answer(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def sarcastic_answer(self, prompt: Tuple[str], length: int, api_key: str, language="EN",
+                               temperature=0.5) -> str:
         q = " ".join(str(x) for x in prompt)
         scaffold = Template(language_map[language]["sarcasm"]).substitute(input=q)
         headers = {
@@ -250,7 +256,8 @@ class ApiClient(ApiClientInterface):
                 return out
 
     @try_catch_log
-    async def foulmouth_answer(self, prompt: Tuple[str], length: int, api_key: str, language="EN", temperature=0.5):
+    async def foulmouth_answer(self, prompt: Tuple[str], length: int, api_key: str, language="EN",
+                               temperature=0.5) -> str:
         q = " ".join(str(x) for x in prompt)
         scaffold = Template(language_map[language]["foulmouth"]).substitute(input=q)
         headers = {
