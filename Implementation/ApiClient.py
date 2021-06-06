@@ -6,7 +6,7 @@ from typing import Tuple
 import aiohttp
 
 from Abstraction.IApiClient import ApiClientInterface
-from Errors.RequestFailedException import RequestFailedException
+from Errors import RequestFailedException
 from Helpers.Formatters import prep_sentiment
 from Helpers.Wrappers import try_catch_log
 from Implementation import LoggingHandler
