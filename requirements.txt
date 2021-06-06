@@ -1,3 +1,5 @@
 pymongo==3.11.4
 discord~=1.0.1
 aiohttp~=3.7.4.post0
+mongoengine~=0.23.1
+cryptography~=3.4.7
