@@ -1,11 +1,11 @@
+#  e4c6 ~ 2021
+
 import asyncio
 
 import discord
 from discord.ext import commands
 
-from Errors.CreditExhaustedError import CreditExhaustedError
-from Errors.EmptyPromptError import EmptyPromptError
-from Errors.NotAdminError import NotAdminError
+from Errors import CreditExhaustedError, EmptyPromptError, NotAdminError
 from Helpers import user_parse
 from Helpers.Emojis import thumbs_up, complete
 from Helpers.Messages import help_message
