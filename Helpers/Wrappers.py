@@ -1,11 +1,9 @@
+#  e4c6 ~ 2021
+
 from functools import wraps
 
-from Errors.CreditExhaustedError import CreditExhaustedError
-from Errors.EmptyPromptError import EmptyPromptError
-from Errors.NotAdminError import NotAdminError
-from Errors.OpenAIError import OpenAIError
-from Errors.TokenExhaustedError import TokenExhaustedError
-from Errors.TokenInvalidError import TokenInvalidError
+from Errors import CreditExhaustedError, EmptyPromptError, NotAdminError, OpenAIError, TokenExhaustedError, \
+    TokenInvalidError
 
 
 def try_catch_log(method):
