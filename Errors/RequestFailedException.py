@@ -1,9 +1,9 @@
+#  e4c6 ~ 2021
+
 from string import Template
 
 from Errors import *
-from Errors.OpenAIError import OpenAIError
-from Errors.TokenExhaustedError import TokenExhaustedError
-from Errors.TokenInvalidError import TokenInvalidError
+from Errors import OpenAIError, TokenExhaustedError, TokenInvalidError
 
 
 class RequestFailedException(Error):
